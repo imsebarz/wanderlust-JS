@@ -12,7 +12,7 @@ const $input = $("#city");
 const $submit = $("#button");
 const $destination = $("#destination");
 const $container = $(".container");
-const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3"), $("#venue4")];
+const $venueDivs = [$("#venue1"), $("#venue2"), $("#venue3")];
 const $weatherDiv = $("#weather1");
 const weekDays = [
   "Sunday",
@@ -27,13 +27,12 @@ const weekDays = [
 // Add AJAX functions here:
 const getVenues = async () => {
   const city = $input.val();
-  const urlToFetch = `${url}${city}&limit=10&client_id=${clientId}&client_secret=${clientSecret}&v=20200504`;
+  const urlToFetch = `${url}${city}&limit=3&client_id=${clientId}&client_secret=${clientSecret}&v=20200504`;
   try {
     const response = await fetch(urlToFetch);
     if (response.ok) {
       const jsonResponse = await response.json();
       const venues = jsonResponse.response.groups[0].items.map(item => item.venue)
-      console.log(venues)
       return venues
     }
   } catch (error) {
@@ -58,8 +57,15 @@ const getForecast = async () => {
 const renderVenues = (venues) => {
   $venueDivs.forEach(($venue, index) => {
     // Add your code here:
-
-    let venueContent = "";
+    const venue = venues[index]
+    const venueIcon = venue.categories[0].icon
+    const venueImgSrc = `${venueIcon.prefix}bg_64${venueIcon.suffix}`
+    let venueContent = `<h2>${venue.name}</h2>
+    <img class="venueimage" src="${venueImgSrc}"/>
+    <h3>Address:</h3>
+    <p>${venue.location.formattedAddress[0]}</p>
+    <p>${venue.location.city}</p>
+    <p>${venue.location.country}</p>`
     $venue.append(venueContent);
   });
   $destination.append(`<h2>${venues[0].location.city}</h2>`);
@@ -77,7 +83,8 @@ const executeSearch = () => {
   $weatherDiv.empty();
   $destination.empty();
   $container.css("visibility", "visible");
-  getVenues();
+  getVenues()
+  .then(venues => renderVenues(venues))
   getForecast();
   return false;
 };
