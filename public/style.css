@@ -20,6 +20,18 @@
     color: #ffffff;
     margin: auto;
   }
+
+  .random{
+    font-family: Montserrat;
+    font-size: 24px;
+    font-weight: 300;
+    padding-top: 20px;
+    font-style: italic;
+    letter-spacing: 1.1px;
+    text-align: center;
+    color: #000000;
+    margin: auto;
+  }
   
   h3 {
     font-family: Work Sans;

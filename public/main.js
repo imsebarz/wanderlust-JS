@@ -27,13 +27,18 @@ const weekDays = [
 // Add AJAX functions here:
 const getVenues = async () => {
   const city = $input.val();
-  const urlToFetch = `${url}${city}&limit=3&client_id=${clientId}&client_secret=${clientSecret}&v=20200504`;
+  const urlToFetch = `${url}${city}&limit=30&client_id=${clientId}&client_secret=${clientSecret}&v=20200504`;
   try {
     const response = await fetch(urlToFetch);
     if (response.ok) {
       const jsonResponse = await response.json();
-      const venues = jsonResponse.response.groups[0].items.map(item => item.venue)
-      return venues
+      const items = jsonResponse.response.groups[0].items
+      const random = Math.floor(Math.random() * items.length)
+      const randomVenues = [];
+      for (let i = 0; i < 3; i++) {
+        random.push(items[random].venue)       
+      }
+      return randomVenues
     }
   } catch (error) {
     console.log(error);
@@ -72,9 +77,7 @@ const renderVenues = (venues) => {
 };
 
 const renderForecast = (day) => {
-  // Add your code here:
-
-  let weatherContent = "";
+  const weatherContent = createWeatherHTML(day);
   $weatherDiv.append(weatherContent);
 };
 
@@ -85,7 +88,8 @@ const executeSearch = () => {
   $container.css("visibility", "visible");
   getVenues()
   .then(venues => renderVenues(venues))
-  getForecast();
+  getForecast()
+  .then(forecast => renderForecast(forecast))
   return false;
 };
 
